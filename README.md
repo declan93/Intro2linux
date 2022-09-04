@@ -10,7 +10,7 @@ There are two main methods for launching a terminal on Linux machines. The termi
 #### Moving about ####
 There are a number of essential commands. `ls` allows us to list the files in the directory. We can pass flags to `ls` to change th structure of the output e.g `ls -lhrt` use either `man ls` or `ls --help` to find out the meaning each flag. `ls ..` Will list directories one level up from your current working directory.
 
-`pwd` will print you current location. **Never work in the root directory** On your own machines you should always be under your home directory. When working on HPC servers you should be working on a dedicated storage mount.
+`pwd` will print your current location. **Never work in the root directory** On your own machines you should always be under your home directory. When working on HPC servers you should be working on a dedicated storage mount.
 
 `cd` is used to change directory e.g `cd /home/declan/newdirectory`. `cd -` will return you to the previous directory. 
 
@@ -24,6 +24,11 @@ There is a short learning curve to working with vi but it has some powerful feat
 `vi newfile.txt` 
 
 vi has a number of modes - it will open in normal mode and we will most of the time want to be in `insert mode` by typing either `a` or `i` we can save the changes and close the editor by hitting the escape key to return to normal mode and type `:wq` we can discard the changes made by dropping the `w`.
+
+We can print the whole file using `cat` alternatively some times we are only interested in the first n lines or the last n lines. We can use `head file.txt` and `tail file.txt` to print the first and last ten lines in a file.
+
+*less is more*
+To view a file one page at a time we can use a programme called `less` e.g `less file.txt`, type `q` to exit.
 
 The `rm` command will delete a file e.g `rm newfile.txt` to remove all files in a directory 
 ```
@@ -71,11 +76,24 @@ grep "PATTERN" newfile.txt | wc -l # note the use of the "pipe" symbol - we can 
 awk '{sum += $8} END {print sum/NR}' newfile.txt # calculate mean of column 8
 ```
 
+
 *string commands together*
 
 Below will extract lines containing the pattern and calculate the average. We can use the pipe operator to string commands together. Most unix tools will read the stdin if you do not provide a file. The pipe operator streams the stdout from one process to stdin of another
 ```
 grep PATTERN newfile.txt | sed 's/^chr//g' | awk '{sum += $8} END {print sum/NR}'
+```
+We can sort the data and find unique lines (cat is not required below)
+
+```
+cat file.txt | sort | uniq 
+
+```
+
+Or count occurences of entries in a file 
+
+```
+sort file.txt | uniq -c
 ```
 
 *working with zipped data*
@@ -194,3 +212,15 @@ alias l='ls -lhrt'
 We can now type `l` to run the above command. You can check what the command is by typing `type l`
 
 As you find commands or bash functions that you use a lot you can these to make working efficient - . 
+
+### Some more usefule commands ###
+
+`ps`							              list your running processes
+`kill processID`				        stop a process (use ps to find processID)
+`top`						              	more detailed view of running processes
+`Ctrl-c`				            		terminate current job
+`w / who` 			              	show information on logged in users	
+`tar -czf file.tar.gz files`		created a gzipped archive from files
+`tar -xzf file.tar.gz`			    extract files from a gzipped archive
+`wget http://address/file`		  download a file from the specified address
+`exit`							            log out of the current shell
