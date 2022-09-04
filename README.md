@@ -186,6 +186,23 @@ python dosomething.py file_with_looped_info.txt.gz
 ```
 We then have two separate ways to run this file. We can set the permissions bit to make it executable. We can then call the script by typing its name e.g `./shell_script_name.sh`. We can alternatively type `bash shell_script_name.sh`
 
+Its often bad practice to write a script to do one specific action with hardcoded inputs and outputs. We can pass arguments to a script the example below, called `mpileup.sh`, will take an argument i.e bash mpileup.sh SAMPLE.bam
+
+```
+#!/bin/bash
+
+samtools mpileup $1 > ${1/.bam/.mpup}
+
+```
+The `$1` is evaluated as the filename, SAMPLE.bam. We can use some bash wizzardry to remove the .bam suffix and replace it with a different suffix, using the structure ${VAR/FIND/REPLACE}. You will come across many ways to do this e.g, `NEWNAME=$(basename sample.bam .bam).mpup . You can pass more arguments by using $2, $3 etc... 
+
+If we provide a full path to the raw data we can also strip the full path using shell variables
+```
+NEWNAME="/path/to/somewhere/fizzbuzz.txt" # new name can be an argument variable too
+echo ${NEWNAME##*/}
+fizzbuzz.txt
+```
+
 ### Making life easier in the terminal ###
 
 #### Paths and environments ####
