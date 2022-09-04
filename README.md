@@ -61,6 +61,14 @@ grep PATTERN newfile.txt | sed 's/^chr//g' | awk '{sum += $8} END {print sum/NR}
 ```
 
 *working with zipped data*
+Often Genomic data is kept in compressed form linux allows us to peak at and analyse zipped data without the need for uncompressing the data.
+```
+zcat newfile.gz | head # print top 10 lines from zipped file.
+```
+
+*writing data out*
+```
+zcat newfile.gz | grep PATTERN > newfile_PATTERN.txt # > is known as redirection a brief introduction to I/O can be found [here](https://www.brianstorti.com/understanding-shell-script-idiom-redirect/)
 
 
 ### Making life easier in the terminal ###
