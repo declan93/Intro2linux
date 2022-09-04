@@ -32,8 +32,10 @@ rm -rf newdirectory/
 **Never use the above blindly or with sudo privaleges**
 
 *moving and copying data*
-we can copy a file from one location to another i.e making a working copy from a master set.
- ``` cp file1.txt newdirectory/
+
+We can copy a file from one location to another i.e making a working copy from a master set.
+ ``` 
+ cp file1.txt newdirectory/
  or
      cp file1.txt newdirectory/newname_file1.txt # here we have renamed the file
  ```
