@@ -25,8 +25,23 @@ There is a short learning curve to working with vi but it has some powerful feat
 
 vi has a number of modes - it will open in normal mode and we will most of the time want to be in `insert mode` by typing either `a` or `i` we can save the changes and close the editor by hitting the escape key to return to normal mode and type `:wq` we can discard the changes made by dropping the `w`.
 
-The `rm` command will delete a file e.g `rm newfile.txt` 
+The `rm` command will delete a file e.g `rm newfile.txt` to remove all files in a directory 
+```
+rm -rf newdirectory/ 
+```
+**Never use the above blindly or with sudo privaleges**
 
+*moving and copying data*
+we can copy a file from one location to another i.e making a working copy from a master set.
+ ``` cp file1.txt newdirectory/
+ or
+     cp file1.txt newdirectory/newname_file1.txt # here we have renamed the file
+ ```
+ Likewise sometimes we may need to move a file from one location to another with a new name. We can drop the new name to keep the original name.
+ ```
+ mv file1.txt newdirectory/newname_file1.txt
+ ```
+ 
 ##### Advanced file manipulation #####
 
 Often we will only want to eyeball some data or else perform some basic statistics like counting the number of entries. Unix provides us with a plethora of command line tools. Below are some examples of commands I use frequently and are by no means exhaustive. 
@@ -55,7 +70,7 @@ awk '{sum += $8} END {print sum/NR}' newfile.txt # calculate mean of column 8
 ```
 
 *string commands together*
-Below will extract lines containing the pattern and calculate the average.
+Below will extract lines containing the pattern and calculate the average. We can use the pipe operator to string commands together. Most unix tools will read the stdin if you do not provide a file. The pipe operator streams the stdout from one process to stdin of another
 ```
 grep PATTERN newfile.txt | sed 's/^chr//g' | awk '{sum += $8} END {print sum/NR}'
 ```
@@ -70,7 +85,49 @@ zcat newfile.gz | head # print top 10 lines from zipped file.
 `>` is known as redirection a brief introduction to I/O can be found [here](https://www.brianstorti.com/understanding-shell-script-idiom-redirect/)
 ```
 zcat newfile.gz | grep PATTERN > newfile_PATTERN.txt 
+```
 
+*File permisions*
+Set the file permissions on a specific file
+```
+chmod 755 file.txt
+```
+Set the permisions on every file in a directory (-R -> recursively)
+```
+chmod -R 755 newdirectory
+```
+
+### Bash expansions, globbing and some bash scripting ### 
+You should avoid using special characters in filenames. Numbers are ok but avoid starting a filename with a number. 
+
+The Bourne again shell (Bash) allows us to use some expansions to conveniently work with our data. 
+*match all files with pattern*
+Below will list all files that begin with RNASEQ, the `*` matches every other character 
+```
+ls -l RNASEQ*
+```
+we can use `?` to match only one character - below `?` will match the "m" in temp
+```
+dbennett@lugh:/data/Seoighe_data$ ls -l te?p
+-rw-rw---- 1 test test 980022 Dec 31  2019 temp
+```
+
+Often we will need to run a command on multiple files sequentially. While this is ok for 1 or 2 files often we will have 1000's. This is where a good foundation in bash and unix commands will allow you to minimise the amount of time you need to interact with a computer. 
+
+Here we will use a `for loop`. This will list all files that end with fastq and pass them to the fastqc programme. In each iteration the file to be analysed is stored in a bash variable which we have called `i`. To tell bash we want to use this variable we prefix the variable with `$`
+
+```
+for i in *fastq; do
+  fastqc $i;
+done
+```
+we can also generate a list of numbers while we can use this command `for i in `seq 1 10`; do echo $i; done` Its more convenient to use a bash expansion 
+
+```
+for i in {1..10}; do 
+echo $i
+done
+```
 
 ### Making life easier in the terminal ###
 #### Bashrc & Alias' ####
