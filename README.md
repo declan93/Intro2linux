@@ -57,25 +57,25 @@ Often we will only want to eyeball some data or else perform some basic statisti
 
 *Counting*
 ```
-wc -l newfile.txt # count number of lines in a file
-grep "PATTERN" newfile.txt | wc -l # note the use of the "pipe" symbol - we can string commands together
+wc -l file.txt # count number of lines in a file
+grep "PATTERN" file.txt | wc -l # note the use of the "pipe" symbol - we can string commands together
 ```
 
 *Finding and Replacing*
  ```
  sed 's/chr//g' newfile.txt # replace all occurences of chr with nothing - be very careful - 99% of the time we will only want to remove chr from chromosomes names - we need to make sure chr doesn't occur elsewhere
  
- sed 's/^chr//g' newfile.txt # we can use a special character, ^, to only replace chrs which occur at the start of the line. 
+ sed 's/^chr//g' file.txt # we can use a special character, ^, to only replace chrs which occur at the start of the line. 
  ```
  
  *extracting columns* from a file.
  ```
- awk '{print $1,$2}' newfile.txt # cut can also be used.
+ awk '{print $1,$2}' file.txt # cut can also be used.
 ```
 
 *calculate the average value of a column of data*
 ```
-awk '{sum += $8} END {print sum/NR}' newfile.txt # calculate mean of column 8
+awk '{sum += $3} END {print sum/NR}' file.txt # calculate mean of column 3
 ```
 
 
@@ -83,7 +83,7 @@ awk '{sum += $8} END {print sum/NR}' newfile.txt # calculate mean of column 8
 
 Below will extract lines containing the pattern and calculate the average. We can use the pipe operator to string commands together. Most unix tools will read the stdin if you do not provide a file. The pipe operator streams the stdout from one process to stdin of another
 ```
-grep PATTERN newfile.txt | sed 's/^chr//g' | awk '{sum += $3} END {print sum/NR}'
+grep PATTERN file.txt | sed 's/^chr//g' | awk '{sum += $3} END {print sum/NR}'
 ```
 We can sort the data and find unique lines (cat is not required below)
 
@@ -102,6 +102,7 @@ sort file.txt | uniq -c
 
 Often Genomic data is kept in compressed form linux allows us to peak at and analyse zipped data without the need for uncompressing the data.
 ```
+gzip -c file.txt > newfile.txt.gz # write zipped data to new file. for large data omit -c and > newfile.txt.gz 
 zcat newfile.gz | head # print top 10 lines from zipped file.
 ```
 
@@ -131,6 +132,8 @@ The Bourne again shell (Bash) allows us to use some expansions to conveniently w
 
 Below will list all files that begin with RNASEQ, the `*` matches every other character 
 ```
+cd rnaseq/
+
 ls -l RNASEQ*
 ```
 we can use `?` to match only one character - below `?` will match the "m" in temp
@@ -148,7 +151,7 @@ Here we will use a `for loop`. This will list all files that end with fastq and 
 
 ```
 for i in *fastq; do
-  echo "fastqc $i"; echo evaluates the variable within a string and prints it to the screen; remove echo and the " and the fastwc program will run if installed
+  echo "fastqc $i"; # echo evaluates the variable within a string and prints it to the screen; remove echo and the " and the fastwc program will run if installed
 done
 ```
 we can also generate a list of numbers while we can use this command `for i in `seq 1 10`; do echo $i; done` Its more convenient to use a bash expansion 
@@ -174,15 +177,20 @@ Often we may need to run many commands together. we can use a bash script to do 
 
 # extract information from every fastq file
 rm file_with_looped_info.txt # remove previously made file
+
+echo Looping over the fastq files >&2
 for i in *fastq; do
   cat $i >> file_with_looped_info.txt;
 done
 
+echo Now zipping the data >&2
 # zip it
-bgzip file_with_looped_info.txt
+gzip -c file_with_looped_info.txt > file_with_looped_info.txt.gz
 
+echo Finally processing with python >&2
 # perform analysis using python
 python dosomething.py file_with_looped_info.txt.gz
+
 
 ```
 We then have two separate ways to run this file. We can set the permissions bit to make it executable. We can then call the script by typing its name e.g `./shell_script_name.sh`. We can alternatively type `bash shell_script_name.sh`
@@ -192,7 +200,7 @@ Its often bad practice to write a script to do one specific action with hardcode
 ```
 #!/bin/bash
 
-samtools mpileup $1 > ${1/.bam/.mpup}
+echo "samtools mpileup $1 > ${1/.bam/.mpup}"
 
 ```
 The `$1` is evaluated as the filename, SAMPLE.bam. We can use some bash wizzardry to remove the .bam suffix and replace it with a different suffix, using the structure `${VAR/FIND/REPLACE}`. You will come across many ways to do this e.g, `NEWNAME=$(basename sample.bam .bam).mpup` . You can pass more arguments by using $2, $3 etc... 
@@ -209,7 +217,7 @@ fizzbuzz.txt
 #### Paths and environments ####
 What happens if you move directory and call the above script exactly as above? The system will not be able to find the shell script. How does Linux know where the cd command or ls commands are located? With linux we can specify the path to our software - this is an environment variable that contains the paths to the software we have specified. When we call a command the system will check each location. We have seen paths in action above with `ls ..`
 
-`..` idicates up one level on the current path `.` indicates current working directory, i.e, `ls` == `ls ./`
+`..` indicates up one level on the current path `.` indicates current working directory, i.e, `ls` == `ls ./`
 
 When we open a shell/terminal a set of environment variables gets read and stored. If a command is in our path `whereis` will print its location.
 
@@ -255,7 +263,7 @@ As you find commands or bash functions that you use a lot you can these to make 
 
 `wget http://address/file`		  download a file from the specified address
 
-`exit`							            log out of the current shell
+`exit or ctrl + d`							log out of the current shell
 
 
 ### Connecting to remote servers ###
@@ -282,6 +290,6 @@ We can the connect by typing `ssh HPC1`
 To move data on/off a remote service we can use `scp`
 
 ```
-scp data.txt HPC:/data_storage/ # from local to remote
-scp HPC:/data_storage/data.txt ./ # from remote to local
+scp data.txt HPC1:/data_storage/ # from local to remote
+scp HPC1:/data_storage/data.txt ./ # from remote to local
 ```
