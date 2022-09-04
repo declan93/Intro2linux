@@ -67,8 +67,9 @@ zcat newfile.gz | head # print top 10 lines from zipped file.
 ```
 
 *writing data out*
+`>` is known as redirection a brief introduction to I/O can be found [here](https://www.brianstorti.com/understanding-shell-script-idiom-redirect/)
 ```
-zcat newfile.gz | grep PATTERN > newfile_PATTERN.txt # > is known as redirection a brief introduction to I/O can be found [here](https://www.brianstorti.com/understanding-shell-script-idiom-redirect/)
+zcat newfile.gz | grep PATTERN > newfile_PATTERN.txt 
 
 
 ### Making life easier in the terminal ###
