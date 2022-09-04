@@ -25,7 +25,7 @@ There is a short learning curve to working with vi but it has some powerful feat
 
 `vi newfile.txt` 
 
-vi has a number of modes - it will open in normal mode and we will most of the time want to be in `insert mode` by typing either `a` or `i` we can save the changes and close the editor by hitting the escape key to return to normal mode and type `:wq` we can discard the changes made by dropping the `w`.
+vi has a number of modes - it will open in normal mode and we will most of the time want to be in `insert mode` by typing either `a` or `i` we can save the changes and close the editor by hitting the escape key to return to normal mode and typing `:wq` we can discard the changes made and exit by using `:q!`.
 
 We can print the whole file using `cat` alternatively some times we are only interested in the first n lines or the last n lines. We can use `head file.txt` and `tail file.txt` to print the first and last ten lines in a file.
 
