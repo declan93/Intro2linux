@@ -215,7 +215,7 @@ When we open a shell/terminal a set of environment variables gets read and store
 ```
 whereis cd
 ```
-We can add software to our path via the bashrc. The .bashrc is a hidden file in your home directory. We can access it via `vi/nano/gedit` and add the path to our script or software. Below will add the directory bin in my home directory to my path so any executable file located there can be call from any location.
+We can add software to our path via the bashrc. The .bashrc is a hidden file in your home directory. We can access it via `vi/nano/gedit` and add the path to our script or software. Below will add the directory bin in my home directory to my path so any executable file located there can be called from any location.
 
 ```
 export PATH="/home/declan/bin:$PATH"
@@ -226,7 +226,7 @@ We can also use the bashrc to create specific color schemes for our terminal
 
 #### Alias' ####
 
-As Genomic data scientists linux is often the most important tool we have at our disposal. We can make our lives much easier by evoking bash alias.
+As Genomic data scientists, linux is often the most important tool we have at our disposal. We can make our lives much easier by evoking bash alias.
 For example `ls -lhtr` can be added to the bashrc as an alias 
 
 ```
@@ -236,7 +236,7 @@ We can now type `l` to run the above command. You can check what the command is 
 
 As you find commands or bash functions that you use a lot you can these to make working efficient - . 
 
-### Some more usefule commands ###
+### Some more useful commands ###
 
 `ps (aux)`							              list your running processes
 
@@ -255,3 +255,32 @@ As you find commands or bash functions that you use a lot you can these to make 
 `wget http://address/file`		  download a file from the specified address
 
 `exit`							            log out of the current shell
+
+
+### Connecting to remote servers ###
+
+Often we will need to make use of high performance computing /supercomputing/ cloud computing. We can connect to most of these services via a command line tool called ssh (secure shell). 
+```
+ssh USERNAME@ip/hostname
+```
+This will open a shell on the remote server. As with the bashrc. We can create something called an ssh/config file e.g `vi ~/.ssh/config` 
+
+```
+
+Host * # all hosts
+ServerAliveInterval 180 # This keeps the connection open longer, if you have an internet connection that is intermittent
+
+Host HPC1
+        HostName mybigHPC.somewhere.ie # can be the external IP address also.
+        User Username
+        ForwardX11 yes # This allows an x11 window to be opened, e.g if we are making plots in R and don't want to write to a file just yet. 
+        
+```
+We can the connect by typing `ssh HPC1`
+
+To move data on/off a remote service we can use `scp`
+
+```
+scp data.txt HPC:/data_storage/ # from local to remote
+scp HPC:/data_storage/data.txt ./ # from remote to local
+```
