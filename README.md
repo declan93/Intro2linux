@@ -10,7 +10,7 @@ There are two main methods for launching a terminal on Linux machines. The termi
 #### Moving about ####
 There are a number of essential commands. `ls` allows us to list the files in the directory. We can pass flags to `ls` to change th structure of the output e.g `ls -lhrt` use either `man ls` or `ls --help` to find out the meaning each flag.
 
-`pwd` will print you current location. *** Never work in the root directories ***
+`pwd` will print you current location. ** Never work in the root directories **
 
 ### Making life easier in the terminal ###
 #### Bashrc & Alias' ####
