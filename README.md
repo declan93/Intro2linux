@@ -8,7 +8,7 @@ There are two main methods for launching a terminal on Linux machines. The termi
   2) Press ctrl + alt + t 
 
 #### Moving about ####
-There are a number of essential commands. `ls` allows us to list the files in the directory. We can pass flags to `ls` to change th structure of the output e.g `ls -lhrt` use either `man ls` or `ls --help` to find out the meaning each flag.
+There are a number of essential commands. `ls` allows us to list the files in the directory. We can pass flags to `ls` to change th structure of the output e.g `ls -lhrt` use either `man ls` or `ls --help` to find out the meaning each flag. `ls ..` Will list directories one level up from your current working directory.
 
 `pwd` will print you current location. **Never work in the root directory** On your own machines you should always be under your home directory. When working on HPC servers you should be working on a dedicated storage mount.
 
@@ -72,18 +72,21 @@ awk '{sum += $8} END {print sum/NR}' newfile.txt # calculate mean of column 8
 ```
 
 *string commands together*
+
 Below will extract lines containing the pattern and calculate the average. We can use the pipe operator to string commands together. Most unix tools will read the stdin if you do not provide a file. The pipe operator streams the stdout from one process to stdin of another
 ```
 grep PATTERN newfile.txt | sed 's/^chr//g' | awk '{sum += $8} END {print sum/NR}'
 ```
 
 *working with zipped data*
+
 Often Genomic data is kept in compressed form linux allows us to peak at and analyse zipped data without the need for uncompressing the data.
 ```
 zcat newfile.gz | head # print top 10 lines from zipped file.
 ```
 
 *writing data out*
+
 `>` is known as redirection a brief introduction to I/O can be found [here](https://www.brianstorti.com/understanding-shell-script-idiom-redirect/)
 ```
 zcat newfile.gz | grep PATTERN > newfile_PATTERN.txt 
@@ -103,7 +106,9 @@ chmod -R 755 newdirectory
 You should avoid using special characters in filenames. Numbers are ok but avoid starting a filename with a number. 
 
 The Bourne again shell (Bash) allows us to use some expansions to conveniently work with our data. 
+
 *match all files with pattern*
+
 Below will list all files that begin with RNASEQ, the `*` matches every other character 
 ```
 ls -l RNASEQ*
@@ -113,6 +118,9 @@ we can use `?` to match only one character - below `?` will match the "m" in tem
 dbennett@lugh:/data/Seoighe_data$ ls -l te?p
 -rw-rw---- 1 test test 980022 Dec 31  2019 temp
 ```
+
+*looping over files*
+
 
 Often we will need to run a command on multiple files sequentially. While this is ok for 1 or 2 files often we will have 1000's. This is where a good foundation in bash and unix commands will allow you to minimise the amount of time you need to interact with a computer. 
 
@@ -127,9 +135,62 @@ we can also generate a list of numbers while we can use this command `for i in `
 
 ```
 for i in {1..10}; do 
-echo $i
+echo $i; # echo evaluates the variable and prints it to the screen
 done
 ```
+The `>>` operator can be used in conjunction with a for loop to extract information and append it to one file. What would happen if `>` was used instead?
+```
+for i in *fastq; do
+  extract_info $i >> file_with_looped_info.txt;
+done
+```
+### bash scripts ###
+Often we may need to run many commands together. we can use a bash script to do this. Generally bash scripts end with the suffix `.sh` . The first line is called a shebang this tells the system what programme to run the script with. 
+
+
+```
+#!/bin/bash
+# example shell script called bash_script1.sh
+
+# extract information from every fastq file
+for i in *fastq; do
+  extract_info $i >> file_with_looped_info.txt;
+done
+
+# zip it
+bgzip file_with_looped_info.txt
+
+# perform analysis using python
+python dosomething.py file_with_looped_info.txt.gz
+
+```
+We then have two separate ways to run this file. We can set the permissions bit to make it executable. We can then call the script by typing its name e.g `./shell_script_name.sh`. We can alternatively type `bash shell_script_name.sh`
 
 ### Making life easier in the terminal ###
-#### Bashrc & Alias' ####
+#### Paths and environments ####
+What happens if you move directory and call the above script exactly as above? The system will not be able to find the shell script. How does Linux know where the cd command or ls commands are located? With linux we can specify the path to our software - this is an environment variable that contains the paths to the software we have specified. When we call a command the system will check each location.
+
+When we open a shell script a set of environment variables gets read and stored.  
+```
+whereis cd
+```
+We can add software to our path via the bashrc. The .bashrc is a hidden file in your home directory. We can access it via `vi/nano/gedit` and add the path to our script or software. Below will add the directory bin in my home directory to my path so any executable file located there can be call from any location.
+
+```
+export PATH="/home/declan/bin:$PATH"
+```
+Often we need to build software locally - It can be critical the paths to the underlying source libraries, such as LD_LIBRARY are specified
+
+We can use the bashrc to create specific color schemes for our terminal 
+
+#### Alias' ####
+
+As Genomic data scientists linux is often the most important tool we have at our disposal. We can make our lives much easier by evoking bash alias.
+For example `ls -lhtr` can be added to the bashrc as an alias 
+
+```
+alias l='ls -lhrt'
+```
+We can now type `l` to run the above command. You can check what the command is by typing `type l`
+
+As you find commands or bash functions that you use a lot you can these to make working efficient - . 
