@@ -8,13 +8,13 @@ There are two main methods for launching a terminal on Linux machines. The termi
   2) Press ctrl + alt + t 
 
 #### Moving about ####
-There are a number of essential commands. `ls` allows us to list the files in the directory. We can pass flags to `ls` to change th structure of the output e.g `ls -lhrt` use either `man ls` or `ls --help` to find out the meaning each flag. For all commands shown below you should read the man pages for them to be familiar with the flags and conventions. For tools like `awk`, `grep` and `sed` the examples below do not give a full insight to how powerful they can be. 
+There are a number of essential commands. `ls` allows us to list the files in the directory. We can pass flags to `ls` to change the structure of the output e.g `ls -lhrt` use either `man ls` or `ls --help` to find out the meaning each flag. For all commands shown below, you should read the man pages for them to be familiar with the flags and conventions. For tools like `awk`, `grep` and `sed` the examples below do not give a full insight to how powerful they can be. 
 
 `ls ..` Will list directories one level up from your current working directory.
 
 `pwd` will print your current location. **Never work in the root directory** On your own machines you should always be under your home directory. When working on HPC servers you should be working on a dedicated storage mount.
 
-`cd` is used to change directory e.g `cd /home/declan/newdirectory`. `cd -` will return you to the previous directory. 
+`cd` is used to change directory e.g `cd /home/declan/newdirectory`. `cd -` will return you back to the previous directory. 
 
 You may need to create specific directories. We can create a new directory with `mkdir` e.g `mkdir newdirectory`
 
@@ -32,7 +32,7 @@ We can print the whole file using `cat` alternatively some times we are only int
 *less is more*
 To view a file one page at a time we can use a programme called `less` e.g `less file.txt`, type `q` to exit.
 
-The `rm` command will delete a file e.g `rm newfile.txt` to remove all files in a directory 
+The `rm` command will delete a file e.g `rm newfile.txt` to remove all files in a directory we can pass the `-rf` flag
 ```
 rm -rf newdirectory/ 
 ```
@@ -83,7 +83,7 @@ awk '{sum += $8} END {print sum/NR}' newfile.txt # calculate mean of column 8
 
 Below will extract lines containing the pattern and calculate the average. We can use the pipe operator to string commands together. Most unix tools will read the stdin if you do not provide a file. The pipe operator streams the stdout from one process to stdin of another
 ```
-grep PATTERN newfile.txt | sed 's/^chr//g' | awk '{sum += $8} END {print sum/NR}'
+grep PATTERN newfile.txt | sed 's/^chr//g' | awk '{sum += $3} END {print sum/NR}'
 ```
 We can sort the data and find unique lines (cat is not required below)
 
@@ -148,7 +148,7 @@ Here we will use a `for loop`. This will list all files that end with fastq and 
 
 ```
 for i in *fastq; do
-  fastqc $i;
+  echo "fastqc $i"; echo evaluates the variable within a string and prints it to the screen; remove echo and the " and the fastwc program will run if installed
 done
 ```
 we can also generate a list of numbers while we can use this command `for i in `seq 1 10`; do echo $i; done` Its more convenient to use a bash expansion 
@@ -161,7 +161,7 @@ done
 The `>>` operator can be used in conjunction with a for loop to extract information and append it to one file. What would happen if `>` was used instead?
 ```
 for i in *fastq; do
-  extract_info $i >> file_with_looped_info.txt;
+  cat $i >> file_with_looped_info.txt;
 done
 ```
 ### bash scripts ###
@@ -173,8 +173,9 @@ Often we may need to run many commands together. we can use a bash script to do 
 # example shell script called bash_script1.sh
 
 # extract information from every fastq file
+rm file_with_looped_info.txt # remove previously made file
 for i in *fastq; do
-  extract_info $i >> file_with_looped_info.txt;
+  cat $i >> file_with_looped_info.txt;
 done
 
 # zip it
