@@ -239,11 +239,19 @@ As you find commands or bash functions that you use a lot you can these to make 
 ### Some more usefule commands ###
 
 `ps (aux)`							              list your running processes
+
 `kill processID`				        stop a process (use ps to find processID)
+
 `top`						              	more detailed view of running processes
+
 `Ctrl-c`				            		terminate current job
+
 `w / who` 			              	show information on logged in users	
+
 `tar -czf file.tar.gz files`		created a gzipped archive from files
+
 `tar -xzf file.tar.gz`			    extract files from a gzipped archive
+
 `wget http://address/file`		  download a file from the specified address
+
 `exit`							            log out of the current shell
