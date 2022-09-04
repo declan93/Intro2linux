@@ -8,7 +8,9 @@ There are two main methods for launching a terminal on Linux machines. The termi
   2) Press ctrl + alt + t 
 
 #### Moving about ####
-There are a number of essential commands. `ls` allows us to list the files in the directory. We can pass flags to `ls` to change th structure of the output e.g `ls -lhrt` use either `man ls` or `ls --help` to find out the meaning each flag. `ls ..` Will list directories one level up from your current working directory.
+There are a number of essential commands. `ls` allows us to list the files in the directory. We can pass flags to `ls` to change th structure of the output e.g `ls -lhrt` use either `man ls` or `ls --help` to find out the meaning each flag. For all commands shown below you should read the man pages for them to be familiar with the flags and conventions. For tools like `awk`, `grep` and `sed` the examples below do not give a full insight to how powerful they can be. 
+
+`ls ..` Will list directories one level up from your current working directory.
 
 `pwd` will print your current location. **Never work in the root directory** On your own machines you should always be under your home directory. When working on HPC servers you should be working on a dedicated storage mount.
 
@@ -185,10 +187,14 @@ python dosomething.py file_with_looped_info.txt.gz
 We then have two separate ways to run this file. We can set the permissions bit to make it executable. We can then call the script by typing its name e.g `./shell_script_name.sh`. We can alternatively type `bash shell_script_name.sh`
 
 ### Making life easier in the terminal ###
-#### Paths and environments ####
-What happens if you move directory and call the above script exactly as above? The system will not be able to find the shell script. How does Linux know where the cd command or ls commands are located? With linux we can specify the path to our software - this is an environment variable that contains the paths to the software we have specified. When we call a command the system will check each location.
 
-When we open a shell script a set of environment variables gets read and stored.  
+#### Paths and environments ####
+What happens if you move directory and call the above script exactly as above? The system will not be able to find the shell script. How does Linux know where the cd command or ls commands are located? With linux we can specify the path to our software - this is an environment variable that contains the paths to the software we have specified. When we call a command the system will check each location. We have seen paths in action above with `ls ..`
+
+`..` idicates up one level on the current path `.` indicates current working directory, i.e, `ls` == `ls ./`
+
+When we open a shell/terminal a set of environment variables gets read and stored. If a command is in our path `whereis` will print its location.
+
 ```
 whereis cd
 ```
@@ -199,7 +205,7 @@ export PATH="/home/declan/bin:$PATH"
 ```
 Often we need to build software locally - It can be critical the paths to the underlying source libraries, such as LD_LIBRARY are specified
 
-We can use the bashrc to create specific color schemes for our terminal 
+We can also use the bashrc to create specific color schemes for our terminal 
 
 #### Alias' ####
 
@@ -215,7 +221,7 @@ As you find commands or bash functions that you use a lot you can these to make 
 
 ### Some more usefule commands ###
 
-`ps`							              list your running processes
+`ps (aux)`							              list your running processes
 `kill processID`				        stop a process (use ps to find processID)
 `top`						              	more detailed view of running processes
 `Ctrl-c`				            		terminate current job
